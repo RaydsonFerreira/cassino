@@ -2,7 +2,7 @@ package br.com.projeto.cassino.util;
 
 public class CassinoUtil {
 
-    public static Boolean verificaEntradas(int quantidadeApostadores , int contagemHorario, int contagemAntihorario) throws RuntimeException {
+    public static boolean verificaEntradas(int quantidadeApostadores , int contagemHorario, int contagemAntihorario) throws RuntimeException {
 
         if(quantidadeApostadores == 0 && contagemHorario == 0 && contagemAntihorario  == 0) {
             return false;

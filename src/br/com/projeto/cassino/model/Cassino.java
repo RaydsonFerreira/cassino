@@ -9,19 +9,14 @@ public class Cassino {
     private Funcionario funcionarioHorario;
     private Funcionario funcionarioAntihorario;
 
-    private int marcadorContagemHorario;
-    private int marcadorContagemAntihorario;
-
     public Cassino(int quantidadeApostadores , int contagemHorario, int contagemAntihorario) {
 
         this.apostadores = new ArrayList<>();
         for (int i = 1; i <= quantidadeApostadores; i++) {
             this.apostadores.add(new Apostador(i));
         }
-        this.funcionarioHorario = new Funcionario(contagemHorario);
-        this.funcionarioAntihorario = new Funcionario(contagemAntihorario);
-        this.marcadorContagemHorario = 0;
-        this.marcadorContagemAntihorario = quantidadeApostadores;
+        this.funcionarioHorario = new Funcionario(contagemHorario, 0);
+        this.funcionarioAntihorario = new Funcionario(contagemAntihorario, quantidadeApostadores);
 
     }
 
@@ -30,43 +25,45 @@ public class Cassino {
     }
 
     public Apostador contarHorario() {
-
-        marcadorContagemHorario = (marcadorContagemHorario + funcionarioHorario.getContagem() -1) % apostadores.size();
-        return apostadores.get(marcadorContagemHorario);
+        
+        int marcadorHorario = (funcionarioHorario.getMarcadorContagem() + funcionarioHorario.getContagem() -1) % apostadores.size();
+        funcionarioHorario.setMarcadorContagem(marcadorHorario);
+        return apostadores.get(marcadorHorario);
 
     }
 
     public Apostador contarAntihorario() {
 
-        marcadorContagemAntihorario = (marcadorContagemAntihorario - (funcionarioAntihorario.getContagem() % apostadores.size()) + apostadores.size()) % apostadores.size();
-        return apostadores.get(marcadorContagemAntihorario);
+        int marcadorAntihorario = (funcionarioAntihorario.getMarcadorContagem() - (funcionarioAntihorario.getContagem() % apostadores.size()) + apostadores.size()) % apostadores.size();
+        funcionarioAntihorario.setMarcadorContagem(marcadorAntihorario);
+        return apostadores.get(marcadorAntihorario);
 
     }
 
     public void removerApostadores() {
 
-        if (marcadorContagemHorario < marcadorContagemAntihorario) {
+        if (funcionarioHorario.getMarcadorContagem() < funcionarioAntihorario.getMarcadorContagem()) {
 
-            apostadores.remove(marcadorContagemAntihorario);
-            apostadores.remove(marcadorContagemHorario);
-            marcadorContagemAntihorario = marcadorContagemAntihorario - 1;
+            apostadores.remove(funcionarioAntihorario.getMarcadorContagem());
+            apostadores.remove(funcionarioHorario.getMarcadorContagem());
+            funcionarioAntihorario.setMarcadorContagem(funcionarioAntihorario.getMarcadorContagem() - 1);
 
-        } else if (marcadorContagemHorario > marcadorContagemAntihorario) {
+        } else if (funcionarioHorario.getMarcadorContagem() > funcionarioAntihorario.getMarcadorContagem()) {
 
-            apostadores.remove(marcadorContagemHorario);
-            apostadores.remove(marcadorContagemAntihorario);
-            marcadorContagemHorario = marcadorContagemHorario - 1;
+            apostadores.remove(funcionarioHorario.getMarcadorContagem());
+            apostadores.remove(funcionarioAntihorario.getMarcadorContagem());
+            funcionarioHorario.setMarcadorContagem(funcionarioHorario.getMarcadorContagem() - 1);
 
         } else {
 
-            apostadores.remove(marcadorContagemHorario);
+            apostadores.remove(funcionarioHorario.getMarcadorContagem());
 
             // Ajusta os marcadores para a próxima contagem
-            if (marcadorContagemHorario >= apostadores.size()) {
-                marcadorContagemHorario = 0;
+            if (funcionarioHorario.getMarcadorContagem() >= apostadores.size()) {
+                funcionarioHorario.setMarcadorContagem(0);
             }
-            if (marcadorContagemAntihorario >= apostadores.size()) {
-                marcadorContagemAntihorario = apostadores.size();
+            if (funcionarioAntihorario.getMarcadorContagem() >= apostadores.size()) {
+                funcionarioAntihorario.setMarcadorContagem(apostadores.size());
             }
 
         }
